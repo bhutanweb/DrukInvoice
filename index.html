@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DrukInvoice | GST Invoicing Suite</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="top-bar">
+      <div class="brand">
+        <span class="logo">DI</span>
+        <div>
+          <h1>DrukInvoice</h1>
+          <p>GST-ready invoicing & business operations suite</p>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="ghost" id="exportData">Export Data</button>
+        <button class="primary" id="newInvoiceQuick">New Invoice</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <h2>Everything you need to run GST compliant billing</h2>
+          <p>
+            Create GST invoices, quotations, delivery challans, manage inventory, track
+            payments, and generate GST return reports from one workspace.
+          </p>
+          <div class="hero-actions">
+            <button class="primary" id="generateEInvoice">Generate E-Invoice</button>
+            <button class="ghost" id="generateEWay">Generate E-Way Bill</button>
+          </div>
+        </div>
+        <div class="hero-card">
+          <h3>Quick stats</h3>
+          <div class="stats">
+            <div>
+              <span id="statInvoices">0</span>
+              <small>Invoices</small>
+            </div>
+            <div>
+              <span id="statOutstanding">₹0</span>
+              <small>Outstanding</small>
+            </div>
+            <div>
+              <span id="statRevenue">₹0</span>
+              <small>Collected</small>
+            </div>
+          </div>
+          <ul class="pill-list">
+            <li>GST Return Report</li>
+            <li>UPI QR on Invoice</li>
+            <li>15+ Templates</li>
+            <li>Staff Accounts</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="panel" id="customers">
+          <header>
+            <h3>Customer & Vendor</h3>
+            <p>Store GSTIN, contact details, and credit terms in one place.</p>
+          </header>
+          <form id="customerForm">
+            <div class="field">
+              <label for="customerName">Name</label>
+              <input id="customerName" required placeholder="Client or Vendor name" />
+            </div>
+            <div class="field">
+              <label for="customerType">Type</label>
+              <select id="customerType">
+                <option>Customer</option>
+                <option>Vendor</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="customerGstin">GSTIN</label>
+              <input id="customerGstin" placeholder="29ABCDE1234F1Z5" />
+            </div>
+            <div class="field">
+              <label for="customerEmail">Email</label>
+              <input id="customerEmail" type="email" placeholder="billing@email.com" />
+            </div>
+            <div class="field">
+              <label for="customerPhone">Phone</label>
+              <input id="customerPhone" placeholder="+91 98765 43210" />
+            </div>
+            <button class="primary" type="submit">Save Contact</button>
+          </form>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>GSTIN</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="customerTable"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel" id="products">
+          <header>
+            <h3>Products & Inventory</h3>
+            <p>Track HSN/SAC codes, stock, and GST rates.</p>
+          </header>
+          <form id="productForm">
+            <div class="field">
+              <label for="productName">Product / Service</label>
+              <input id="productName" required placeholder="Product name" />
+            </div>
+            <div class="field">
+              <label for="productHSN">HSN/SAC</label>
+              <input id="productHSN" placeholder="9985" />
+            </div>
+            <div class="field">
+              <label for="productPrice">Rate (₹)</label>
+              <input id="productPrice" type="number" min="0" step="0.01" required />
+            </div>
+            <div class="field">
+              <label for="productGST">GST %</label>
+              <input id="productGST" type="number" min="0" max="28" step="0.1" required />
+            </div>
+            <div class="field">
+              <label for="productStock">Stock</label>
+              <input id="productStock" type="number" min="0" step="1" required />
+            </div>
+            <button class="primary" type="submit">Add Product</button>
+          </form>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>HSN</th>
+                  <th>Rate</th>
+                  <th>GST</th>
+                  <th>Stock</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="productTable"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel" id="invoice">
+        <header class="split">
+          <div>
+            <h3>GST Invoice</h3>
+            <p>Create invoices, quotation, delivery challan, and track payments.</p>
+          </div>
+          <div class="tag">GST Ready • Export/SEZ</div>
+        </header>
+        <form id="invoiceForm">
+          <div class="split">
+            <div class="field">
+              <label for="invoiceCustomer">Select Customer</label>
+              <select id="invoiceCustomer"></select>
+            </div>
+            <div class="field">
+              <label for="invoiceDate">Invoice Date</label>
+              <input id="invoiceDate" type="date" />
+            </div>
+            <div class="field">
+              <label for="invoiceType">Document Type</label>
+              <select id="invoiceType">
+                <option>GST Invoice</option>
+                <option>Quotation</option>
+                <option>Proforma Invoice</option>
+                <option>Delivery Challan</option>
+                <option>Purchase Order</option>
+                <option>Credit Note</option>
+                <option>Debit Note</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="items" id="itemsContainer"></div>
+          <button class="ghost" type="button" id="addItem">+ Add Line Item</button>
+
+          <div class="summary">
+            <div>
+              <p>Subtotal</p>
+              <strong id="summarySubtotal">₹0</strong>
+            </div>
+            <div>
+              <p>GST Total</p>
+              <strong id="summaryGST">₹0</strong>
+            </div>
+            <div>
+              <p>Grand Total</p>
+              <strong id="summaryTotal">₹0</strong>
+            </div>
+            <div>
+              <p>Payment Status</p>
+              <select id="invoiceStatus">
+                <option>Unpaid</option>
+                <option>Paid</option>
+                <option>Partially Paid</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="split actions">
+            <button class="primary" type="submit">Save Invoice</button>
+            <button class="ghost" type="button" id="printInvoice">Print</button>
+          </div>
+        </form>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Customer</th>
+                <th>Type</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="invoiceTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="panel">
+          <header>
+            <h3>Payments & Reminders</h3>
+            <p>Track receipts, send reminders, and share UPI QR instantly.</p>
+          </header>
+          <div class="list" id="paymentList"></div>
+        </article>
+        <article class="panel">
+          <header>
+            <h3>Reports</h3>
+            <p>Sales outstanding, ledger, GST return report, and expense tracking.</p>
+          </header>
+          <div class="report">
+            <div>
+              <span>GST Return</span>
+              <strong id="gstReturn">₹0</strong>
+            </div>
+            <div>
+              <span>Outstanding</span>
+              <strong id="reportOutstanding">₹0</strong>
+            </div>
+            <div>
+              <span>Paid Invoices</span>
+              <strong id="reportPaid">0</strong>
+            </div>
+            <div>
+              <span>Inventory Value</span>
+              <strong id="inventoryValue">₹0</strong>
+            </div>
+          </div>
+          <button class="ghost" id="downloadReport">Download Report</button>
+        </article>
+      </section>
+
+      <section class="panel">
+        <header>
+          <h3>Additional GST Features</h3>
+          <p>Every workflow you need to stay compliant and delight customers.</p>
+        </header>
+        <div class="feature-grid">
+          <div>
+            <h4>Shipping & Labels</h4>
+            <p>Generate shipping labels with sender and recipient details.</p>
+          </div>
+          <div>
+            <h4>Barcode Scanning</h4>
+            <p>Improve inventory accuracy with barcode support.</p>
+          </div>
+          <div>
+            <h4>Export & SEZ Invoices</h4>
+            <p>Multi-currency invoices with export compliance notes.</p>
+          </div>
+          <div>
+            <h4>Activity Log</h4>
+            <p>Audit-ready logs for every team member action.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
